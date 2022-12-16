@@ -7,7 +7,14 @@ const {
   deleteUsers,
   patchUsers
 } = require('../controllers/user');
-const { validate } = require('../middlewares/validate');
+
+const {
+  validate,
+  validateJWT,
+  isAdminRole,
+  hasRole
+} = require('../middlewares');
+
 const {
   isValidRole,
   emailExists,
@@ -50,6 +57,9 @@ router.patch('/', patchUsers);
 router.delete(
   '/:id',
   [
+    validateJWT,
+    // isAdminRole,
+    hasRole('ADMIN_ROLE', 'SALES_ROLE'),
     check('id', 'Invalid ID').isMongoId(),
     check('id').custom(idExists),
     validate
